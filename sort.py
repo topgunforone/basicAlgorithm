@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #排序都是升序
-
+#----------------------------------------------------
 def bubble(arr):
     '''
     大数往后放
@@ -18,6 +18,7 @@ def bubble(arr):
             return arr
     return arr
 
+
 #考虑到多种情况的冒泡排序 ,最优的方法
 def bubuleSort(arr):
     flag=len(arr)
@@ -29,7 +30,6 @@ def bubuleSort(arr):
                 arr[j-1],arr[j]=arr[j],arr[j-1]
                 flag=j
     return arr
-
 
 
 #选择排序
@@ -47,7 +47,8 @@ def select_sort(arr):
 
     return arr
 
-#插入排序
+
+#插入排序;带有多次插入,此方法不好，更复杂了
 def insert_sort(arr):
     len_arr=len(arr)
     for i in range(1,len_arr):
@@ -56,9 +57,19 @@ def insert_sort(arr):
             arr[k],arr[k+1]=arr[k+1],arr[k]
             k=k-1
     return  arr
+#插入排序，多次比较，一次插入
+def insert_sort1(arr):
+    for i in range(1,len(arr)):
+        tmp=arr[i]
+        ind=i-1
+        while ind>-1 and arr[ind]>tmp:
+            arr[ind+1]=arr[ind]
+            ind=ind-1
+        arr[ind+1]=tmp
+    return arr
+
 
 #快排序
-
 def quick_sort(arr,L,R):
     i=L
     j=R
@@ -75,9 +86,9 @@ def quick_sort(arr,L,R):
     quick_sort(arr,L,i-1)
     quick_sort(arr,i+1,R)
     return  arr
-#erfen
 
 
+#二分法
 #shell_sort() 原始形式
 def shell_sort(arr):
     lenArr=len(arr)
@@ -92,7 +103,7 @@ def shell_sort(arr):
                     k=k-gap
     return arr
 
-    
+
 #shell排序的简单形式
 def simplyShellSort(arr):
     gap=len(arr)
@@ -101,7 +112,7 @@ def simplyShellSort(arr):
         gap=gap>>1
         for i in range(gap,len_arr):
             k=i-gap
-            if arr[k+gap]<arr[k]:#开始插入排序
+            if arr[k+gap]<arr[k]:#开始组内的插入排序
                 while(k>-1) and (arr[k]>arr[k+gap]):
                     arr[k],arr[k+gap]=arr[k+gap],arr[k]
                     k-=gap
@@ -115,6 +126,7 @@ def mergeSort(arr):
     left=mergeSort(arr[:m])
     right=mergeSort(arr[m:])
     return  merge(left,right)
+
 
 def merge(left,right):
     i,j=0,0
@@ -131,7 +143,8 @@ def merge(left,right):
     return  result
 
 
-#非递归形式的归并排序
+
+#非递归形式的归并排序，用到上文的merge函数
 def mergeSort(arr):
     len_arr=len(arr)
     flag=2
@@ -147,8 +160,7 @@ def mergeSort(arr):
     return arr
 
 
-#堆排序
-
+#堆排分割线-----------------------------------------------------
 #最大堆
 def sift_down(arr, start, end):
     root = start
@@ -177,17 +189,54 @@ def heap_sort(arr):
     # 从最后一个有子节点的孩子开始调整最大堆
     first = len(arr) // 2 - 1
     for start in range(first, -1, -1):
-        sift_down(arr, start, len(arr) - 1)
+        tuning_head(arr, start, len(arr) - 1)
 
     # 将最大的放到堆的最后一个, 堆-1, 继续调整排序
     for end in range(len(arr) -1, 0, -1):
         arr[0], arr[end] = arr[end], arr[0]
-        sift_down(arr, 0, end - 1)
+        tuning_head(arr, 0, end - 1)
     return arr
 
 
+#递归形式
+def tuning_head(arr, start, end):
+    child = start * 2 + 1  # 左孩子
+    if child > end:  # 没有孩子
+        return
+    if child+1<=end and  arr[child+1]<arr[child]:
+        child+=1
+    if  arr[child]<arr[start]:
+        arr[child],arr[start]=arr[start],arr[child]
+        tuning_head(arr,child,end)
 
-def tuning_head(arr,s):
+
+#非递归形式
+def tuning_head1(arr,start,end):
+    root=start
+    while True:
+        child=root*2+1#左孩子
+        if child>end:#没有孩子
+            break
+        if child+1<=end and arr[child+1]>arr[child]:
+            child=child+1
+        if  arr[child]>arr[root]:
+            arr[root],arr[child]=arr[child],arr[root]
+            root=child
+        else:
+            break
+
+
+def sort_head(arr):
+    first=len(arr)//2-1
+    for start in range(first,-1,-1):
+        tuning_head(arr, start, len(arr)-1)
+
+    for end in range(len(arr)-1,0,-1):
+        arr[0],arr[end]=arr[end],arr[0]
+        tuning_head(arr,0, end-1)
+    return arr
+#--------------------------------------------------------
+
 
 
 
@@ -198,4 +247,4 @@ if __name__ == '__main__':
     # print insert_sort(arr)
     # print quick_sort(arr,0,len(arr)-1)
     # print bubble(arr)
-    print heap_sort(arr)
+    print insert_sort1(arr)
