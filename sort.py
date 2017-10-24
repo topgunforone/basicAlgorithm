@@ -148,14 +148,14 @@ def merge(left,right):
 def mergeSort(arr):
     len_arr=len(arr)
     flag=2
-    while(flag<=len_arr):
+    while(flag<len_arr):#如果是刚好或者大于，则不需再进一步排序。
         #分组 排序
         for i in range(0,len_arr,flag):
             left=arr[i:i+flag//2]
             right=arr[i+flag//2:(i+flag)]
             arr[i:(i+flag)]=merge(left,right)
         flag = 2 * flag
-    if flag//2<len_arr:
+    if flag//2<len_arr:#如果最终差了一截需要多做一次
         arr=merge(arr[:flag//2],arr[flag//2:])
     return arr
 
@@ -237,14 +237,9 @@ def sort_head(arr):
     return arr
 #--------------------------------------------------------
 
-
-
-
-
-
 if __name__ == '__main__':
-    arr=[2,1,4,1,5,9,2,1,6]
+    arr=[2,1,4,1,5,9,2,1,6,1]
     # print insert_sort(arr)
     # print quick_sort(arr,0,len(arr)-1)
     # print bubble(arr)
-    print insert_sort1(arr)
+    print mergeSort(arr)
