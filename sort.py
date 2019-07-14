@@ -13,9 +13,10 @@ def bubble(arr):
 # print bubble([5,4,3,2,2,2,1])
 
 
+
 #考虑到多种情况的冒泡排序 ,最优的方法
 def bubuleSort(arr):
-    flag=len(arr)
+    flag=len(arr) #记录需要排到的角标
     while flag:
         n=flag
         flag=0#每次都有可能不需要排序
@@ -46,17 +47,47 @@ def insert_sort(arr):
             k=k-1
     return  arr
 
-#插入排序，多次比较，一次插入
-def insert_sort1(arr):
-    for i in range(1,len(arr)):
-        tmp=arr[i]
-        ind=i-1
-        while ind>-1 and arr[ind]>tmp:
-            arr[ind+1]=arr[ind]
-            ind=ind-1
-        arr[ind+1]=tmp
+# #插入排序，多次比较，一次插入
+# def insert_sort1(arr):
+#     for i in range(1,len(arr)):
+#         tmp=arr[i]
+#         ind=i-1
+#         while ind>-1 and arr[ind]>tmp:
+#             arr[ind+1]=arr[ind]
+#             ind=ind-1
+#         arr[ind+1]=tmp
+#     return arr
+arr = [3,1,4,1,5]
+def insert_arr(arr):
+    for i in range(len(arr)):
+        for j in range(i+1,len(arr)):
+            while j>0:
+                if  arr[j]>arr[j-1]:
+                    arr[j],arr[j-1] = arr[j-1],arr[j]
+                j= j -1
     return arr
 
+
+def merge_sort(arr):
+    if len(arr)<2:return arr
+    left  =merge_sort(arr[:len(arr)//2])
+    right  =merge_sort(arr[len(arr)//2:])
+    return merge_sort_helper(left,right)
+
+def merge_sort_helper(left,right):
+    tot = []
+    i =0
+    j = 0
+    while i <len(left) and j< len(right):
+        if left[i]<right[j]:
+            tot.append(left[i])
+            i = i + 1
+        else:
+            tot.append(right[j])
+            j = j + 1
+    tot.extend(left[i:])
+    tot.extend(right[j:])
+    return tot
 
 #一般快排序
 def quick_sort(arr,L,R):
@@ -368,11 +399,11 @@ def tuning_head1(arr,start,end):
 
 #--------------------------------------------------------
 
-if __name__ == '__main__':
-    arr=np.array([2,1,4,9,1,4,3,2,8])
-    # print insert_sort(arr)
-    # print quick_sort(arr,0,len(arr)-1)
-    # print bubble(arr)
-    # print shel(arr)
-    # print quicksort([3,2,5,1],0,3)
-    print (shell(arr))
+# if __name__ == '__main__':
+#     arr=np.array([2,1,4,9,1,4,3,2,8])
+#     # print insert_sort(arr)
+#     # print quick_sort(arr,0,len(arr)-1)
+#     # print bubble(arr)
+#     # print shel(arr)
+#     # print quicksort([3,2,5,1],0,3)
+#     print (shell(arr))

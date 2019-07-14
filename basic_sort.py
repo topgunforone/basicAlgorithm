@@ -42,19 +42,9 @@ def bubble_sort(arr):
 #     return arr
 # bubble_sort_front([3,1,4,1,5])
 
-# 插入排序
-def insert_sort(arr):
-    m = len(arr)
-    if m<2:return arr
-    for i in range(1,m): # 从1开始也没问题，为了方便
-        j = i
-        while j<m and arr[j]<arr[j-1] : # 因为下面 j-1>0 j< m
-            arr[j], arr[j-1] = arr[j-1], arr[j]
-            j = j - 1
-    return arr
-insert_sort([3,1,4,1,5,9,10,9])
 
-# 选择排序
+
+# 选择排序 每次从后面选出极值排列
 def select_sort(arr):
     m = len(arr)
     if m < 2: return arr
@@ -70,6 +60,41 @@ def select_sort(arr):
     return arr
 select_sort([3,1,4,1,5,9])
 
+# 插入排序
+def insert_sort(arr):
+    m = len(arr)
+    if m<2:return arr
+    for i in range(1,m): # 从1开始也没问题，为了方便
+        j = i
+        while j<m and arr[j]<arr[j-1] : # 因为下面 j-1>0 j< m
+            arr[j], arr[j-1] = arr[j-1], arr[j]
+            j = j - 1
+    return arr
+insert_sort([3,1,4,1,5,9,10,9])
+
+# nlogn 的写法 插入排序算法
+def insert_arr_nlogn(arr):
+    for i in range(1,len(arr)):
+        select_insert(arr,arr[i],i)
+    return arr
+def select_insert(arr,target,i):
+    a = arr[:i]
+    if target>=a[-1]:
+        arr[i] =target
+    elif target<=a[0]:
+        arr[1:i+1]=arr[:i]
+        arr[0]=target
+    else:
+        left = 0
+        right = len(a)-1
+        while left+1<right:
+            mid = (left+right)//2
+            if a[mid]<target:
+                left = mid
+            else:
+                right = mid
+        arr[right+1:i+1] =  arr[right:i]
+        arr[right] = target
 # 快速排序,网上很多版本，我喜欢这个版本
 def quick_sort(arr):
     m = len(arr)
@@ -82,11 +107,13 @@ def quick_sort_helper(arr,left,right):
     if left>right:return
     pivot = arr[left+(right-left)//2]
     while left <= right:
+        # 只是相遇
         while left <= right and arr[right]>pivot:
             right = right - 1
         while left <= right and arr[left]<pivot:
             left= left + 1
         if left <= right:
+        # 相遇之后的错过
             arr[left], arr[right] = arr[right], arr[left]
             left =left + 1
             right = right - 1
@@ -95,10 +122,37 @@ def quick_sort_helper(arr,left,right):
     return arr
 
 
+def quick_sort(arr,left,right):
+    start = left
+    end = right
+    if start >end:return
+    pivot= arr[(left+right)//2]
+    while left<=right:
+        # 只是碰头
+        while left<=right and arr[left]<pivot:
+            left =left+1
+        while left<=right and arr[right]>pivot:
+            right =right-1
+        if left<=right:
+        #碰头了后错过
+            arr[left],arr[right] =arr[right],arr[left]
+            left = left + 1
+            right = right - 1
+    quick_sort(arr,start,right)
+    quick_sort(arr,left,end)
+    return arr
+
+
+
+
 # merge_sort() 分治 divide & conquer
+
+
 def merge_sort(arr):
     m = len(arr)
     if m<2:return arr
+      # 左边排好序的
+      # 右边拍好序的
     left = merge_sort(arr[:m//2])
     right = merge_sort(arr[m//2:])
     return merge_sort_helper(left,right)
@@ -120,8 +174,19 @@ def merge_sort_helper(left,right):
     return total
 
 merge_sort([3,1,4,1,5,9,2,6])
-#### 暂时不掌握
 
+
+
+
+# merget no curse
+def merge_no_curse(arr):
+    flag = 2
+    m = len(arr)
+    while flag <2*m:
+        for i in range(0,m,flag):
+            arr[i:i+flag] = merge_sort_helper(arr[i:flag//2],arr[flag//2:i+flag])
+        flag = flag*2
+    return arr
 # shell_sort
 def shell_sort(arr):
     gap = len(arr)//2
@@ -138,15 +203,6 @@ def shell_sort(arr):
 print(shell_sort([3,1,4,1,5,9,2,6]))
 
 
-## merget no curse
-def merge_no_curse(arr):
-    flag = 2
-    m = len(arr)
-    while flag <2*m:
-        for i in range(0,m,flag):
-            arr[i:i+flag] = merge_sort_helper(arr[i:flag//2],arr[flag//2:i+flag])
-        flag = flag*2
-    return merge
 
 # heap_sort
 
@@ -173,6 +229,16 @@ def tuning_head(arr, start, end):
         tuning_head(arr,child,end)
 
 def heap_sort(arr):
+    m = len(arr)//2-1
+    for i in range(m,-1,-1):
+        tuning_head(arr,i,len(arr)-1)
+    for j in range(len(arr)-1,0,-1):
+        arr[j],arr[0]  =arr[0],arr[j]
+        tuning_head(arr,0,j-1)
+
+
+
+def heap_sort(arr):
     m =  len(arr)//2-1
     for i in range(m,-1,-1):
         tuning_head(arr,i,len(arr)-1)
@@ -192,6 +258,7 @@ def heap_sort_no_curse(arr):
 
 
 def tuning_head_no_curse(arr,start,end):
+    # 跳跃性质
     while True:
         child = 2 * start + 1  # left child
         if child>end:return  # 如果越界
@@ -203,3 +270,5 @@ def tuning_head_no_curse(arr,start,end):
         else:
             break
 heap_sort_no_curse([3,1,4,1,5,9,2,6])
+
+
